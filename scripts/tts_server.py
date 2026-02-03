@@ -2,6 +2,7 @@ import os
 import subprocess
 import pyaudio
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import threading
 import queue
 import time
@@ -9,23 +10,24 @@ import atexit
 import onnxruntime as ort
 import unidecode
 import re
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 # Base directory of the script
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Full paths to model/config
-MODEL_PATH = os.path.join(BASE_DIR, "../../plugins/piper-voices/en/en_US/amy/medium/en_US-amy-medium.onnx")
-CONFIG_PATH = os.path.join(BASE_DIR, "../../plugins/piper-voices/en/en_US/amy/medium/en_US-amy-medium.onnx.json")
-
-#MODEL_PATH = os.path.join(BASE_DIR, "../../plugins/piper-voices/de/de_DE/eva_k/x_low/de_DE-eva_k-x_low.onnx")
-#CONFIG_PATH = os.path.join(BASE_DIR, "../../plugins/piper-voices/de/de_DE/eva_k/x_low/de_DE-eva_k-x_low.onnx.json")
+MODEL_PATH = os.path.join(BASE_DIR, "../voice_models/piper/en/en_US/amy/medium/en_US-amy-medium.onnx")
+CONFIG_PATH = os.path.join(BASE_DIR, "../voice_models/piper/en/en_US/amy/medium/en_US-amy-medium.onnx.json")
 
 SAMPLE_RATE = 22050  # Piper native sample rate
 CHANNELS = 1
 FORMAT = pyaudio.paInt16
-TARGET_OUTPUT_NAME = "CABLE-A Input"
+TARGET_OUTPUT_NAME = os.getenv("TARGET_OUTPUT_NAME")
 USE_CUDA_IF_AVAILABLE = True
 
 WORD_REPLACEMENTS = {

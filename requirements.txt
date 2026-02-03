@@ -1,0 +1,8 @@
+flask
+requests
+websockets
+python-dotenv
+pyaudio
+onnxruntime
+Unidecode
+flask-cors
