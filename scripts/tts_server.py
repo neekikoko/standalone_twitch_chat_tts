@@ -19,6 +19,7 @@ CORS(app)
 
 # Base directory of the script
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PIPER_EXE = os.path.join(BASE_DIR, "../piper/piper.exe")
 
 # Full paths to model/config
 MODEL_PATH = os.path.join(BASE_DIR, "../voice_models/piper/en/en_US/amy/medium/en_US-amy-medium.onnx")
@@ -64,7 +65,7 @@ def replace_words(text: str) -> str:
 # Start Piper subprocess once, keep it alive
 # -------------------------------------------------------------
 cmd = [
-    "piper",
+    PIPER_EXE,
     "--model", MODEL_PATH,
     "--config", CONFIG_PATH,
     "--output-raw",
