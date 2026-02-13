@@ -22,8 +22,9 @@
    If everything works correctly, the audio is generated, sent to OBS and you should be able to hear it.
 
 # Installation Part 2
-1. In .env set TWITCH_CHANNEL_NAME to your channel name.
-2. In .env set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET. Please acquire it like so:
+1. In .env, set ``TEST_WITHOUT_REDEEMS=false``
+2. In .env set TWITCH_CHANNEL_NAME to your channel name.
+3. In .env set TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET. Please acquire it like so:
    1. Visit https://dev.twitch.tv/console and log in. 
    2. Click on the menu point “Applications” 
    3. Click on “+ Register Your Application” 
@@ -36,15 +37,16 @@
    10. Copy the text inside the field titled “Client ID” and set it as TWITCH_CLIENT_ID inside the .env file.
    11. At the bottom of this page, you'll see a button labeled "New Secret".
    Press it and a text string similar to your Client ID will be displayed. Copy this and set it as TWITCH_CLIENT_SECRET inside the .env file.
-3. In .env set TWITCH_OAUTH_TOKEN. Please acquire it like so:
+4. In .env set TWITCH_OAUTH_TOKEN. Please acquire it like so:
    1. Open a terminal window inside the helper_scripts folder.
    2. In the terminal, enter ``py .\get_twitch_token.py``.
    3. Your browser will open and an OAuth authentication process will start, requiring you to login. Please do so.
    4. After successful OAuth authentication, the terminal window will display ``Access Token:`` and underneath your newly generated OAuth access token.
    5. Copy this and set it as TWITCH_OAUTH_TOKEN inside the .env file.
-4. In .env set TWITCH_BROADCASTER_ID. Please acquire it like so:
+5. In .env set TWITCH_BROADCASTER_ID. Please acquire it like so:
    1. Open a terminal window inside the helper_scripts folder.
    2. In the terminal, enter ``py .\get_twitch_broadcaster_id.py``.
    3. Your terminal will display ``Broadcaster ID:`` and after that your Broadcaster ID.
    4. Copy this and set it as TWITCH_BROADCASTER_ID inside the .env file.
+6. In .env set REWARD_TITLE to the name of your point redeem.
 
