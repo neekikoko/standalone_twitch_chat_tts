@@ -11,31 +11,15 @@ CLIENT_ID = os.getenv("TWITCH_CLIENT_ID")
 CLIENT_SECRET = os.getenv("TWITCH_CLIENT_SECRET")
 BROADCASTER_ID = os.getenv("TWITCH_BROADCASTER_ID")
 REWARD_TITLE = os.getenv("REWARD_TITLE", "").lower()
+TWITCH_OAUTH_TOKEN = os.getenv("TWITCH_OAUTH_TOKEN")
 TEST_WITHOUT_REDEEMS = os.getenv("TEST_WITHOUT_REDEEMS", "false").lower() in ("1", "true")
 
 TTS_URL = "http://127.0.0.1:5005/speak"
-
-# ------------------------------------------------------------
-# OAuth token
-# ------------------------------------------------------------
-def get_app_token():
-    r = requests.post(
-        "https://id.twitch.tv/oauth2/token",
-        params={
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "grant_type": "client_credentials",
-        },
-        timeout=10,
-    )
-    r.raise_for_status()
-    return r.json()["access_token"]
 
 def mask(value, show_start=4, show_end=4):
     if not value or len(value) <= show_start + show_end:
         return "***"
     return value[:show_start] + "..." + value[-show_end:]
-
 
 def subscribe(session_id, token):
     url = "https://api.twitch.tv/helix/eventsub/subscriptions"
@@ -113,7 +97,7 @@ def send_to_tts(text):
 # WebSocket listener
 # ------------------------------------------------------------
 async def run_twitch():
-    token = get_app_token()
+    token = TWITCH_OAUTH_TOKEN
 
     async with websockets.connect("wss://eventsub.wss.twitch.tv/ws") as ws:
         print("[INFO] Connected to Twitch EventSub")
