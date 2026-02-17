@@ -28,7 +28,7 @@
    1. Visit https://dev.twitch.tv/console and log in. 
    2. Click on the menu point “Applications” 
    3. Click on “+ Register Your Application” 
-   4. Enter “Chat Overlay” into the field “Name” 
+   4. Enter any identifiable name into the field “Name” 
    5. Enter “http://localhost:8787/callback” into the field “OAuth Redirect URLs”. 
    6. Enter “Application Integration” into the field “Category” 
    7. As “Client Type” set “Confidential” 

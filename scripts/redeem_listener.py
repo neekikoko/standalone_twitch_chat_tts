@@ -31,9 +31,12 @@ def get_app_token():
     r.raise_for_status()
     return r.json()["access_token"]
 
-# ------------------------------------------------------------
-# Subscribe to redemption events
-# ------------------------------------------------------------
+def mask(value, show_start=4, show_end=4):
+    if not value or len(value) <= show_start + show_end:
+        return "***"
+    return value[:show_start] + "..." + value[-show_end:]
+
+
 def subscribe(session_id, token):
     url = "https://api.twitch.tv/helix/eventsub/subscriptions"
 
@@ -55,7 +58,45 @@ def subscribe(session_id, token):
         "Content-Type": "application/json"
     }
 
+    # ----------------------------
+    # SAFE DEBUG OUTPUT
+    # ----------------------------
+    print("\n========== EVENTSUB SUBSCRIBE REQUEST ==========")
+    print("URL:")
+    print(url)
+
+    print("\nHeaders:")
+    safe_headers = {
+        "Client-Id": mask(CLIENT_ID),
+        "Authorization": f"Bearer {mask(token, 6, 4)}",
+        "Content-Type": "application/json"
+    }
+    print(json.dumps(safe_headers, indent=2))
+
+    print("\nBody:")
+    safe_body = {
+        "type": body["type"],
+        "version": body["version"],
+        "condition": {
+            "broadcaster_user_id": mask(BROADCASTER_ID)
+        },
+        "transport": {
+            "method": "websocket",
+            "session_id": mask(session_id)
+        }
+    }
+    print(json.dumps(safe_body, indent=2))
+
+    print("================================================\n")
+
+    # Send request
     r = requests.post(url, headers=headers, json=body)
+
+    print("========== TWITCH RESPONSE ==========")
+    print("Status:", r.status_code)
+    print("Body:", r.text)
+    print("======================================\n")
+
     r.raise_for_status()
     print("[INFO] Subscribed to channel point redemptions")
 

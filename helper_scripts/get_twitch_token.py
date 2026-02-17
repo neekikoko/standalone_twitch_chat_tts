@@ -64,7 +64,7 @@ def main():
         print("TWITCH_CLIENT_ID missing in .env")
         return
 
-    scopes = "chat:read+chat:edit+channel:bot"
+    scopes = "channel:read:redemptions"
 
     auth_url = (
         "https://id.twitch.tv/oauth2/authorize"
