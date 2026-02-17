@@ -21,9 +21,16 @@ CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PIPER_EXE = os.path.join(BASE_DIR, "../piper/piper.exe")
 
+TTS_MODE = os.getenv("TTS_MODE")
+VOICEVOX_VOICE_ID = os.getenv("VOICEVOX_VOICE_ID")
+PIPER_VOICE_NAME = os.getenv("PIPER_VOICE_NAME")
+
+TARGET_OUTPUT_NAME = os.getenv("TARGET_OUTPUT_NAME")
+VOICEVOX_URL = "http://127.0.0.1:50021"
+
 # Full paths to model/config
-MODEL_PATH = os.path.join(BASE_DIR, "../voice_models/piper/en/en_US/amy/medium/en_US-amy-medium.onnx")
-CONFIG_PATH = os.path.join(BASE_DIR, "../voice_models/piper/en/en_US/amy/medium/en_US-amy-medium.onnx.json")
+PIPER_MODEL_PATH = os.path.join(BASE_DIR, "../voice_models/piper/" + PIPER_VOICE_NAME + "/medium/en_US-" + PIPER_VOICE_NAME + "-medium.onnx")
+PIPER_CONFIG_PATH = os.path.join(BASE_DIR, "../voice_models/piper/" + PIPER_VOICE_NAME + "/medium/en_US-" + PIPER_VOICE_NAME + "-medium.onnx.json")
 
 SAMPLE_RATE = 22050  # Piper native sample rate
 CHANNELS = 1
@@ -61,13 +68,11 @@ def replace_words(text: str) -> str:
         text = re.sub(pattern, dst, text, flags=re.IGNORECASE)
     return text
 
-# -------------------------------------------------------------
 # Start Piper subprocess once, keep it alive
-# -------------------------------------------------------------
 cmd = [
     PIPER_EXE,
-    "--model", MODEL_PATH,
-    "--config", CONFIG_PATH,
+    "--model", PIPER_MODEL_PATH,
+    "--config", PIPER_CONFIG_PATH,
     "--output-raw",
     "--length-scale", "0.7"
 ]
@@ -92,9 +97,7 @@ piper_proc = subprocess.Popen(
 # Thread-safe queue for audio chunks
 audio_queue = queue.Queue()
 
-# -------------------------------------------------------------
 # Background thread to read Piper stdout continuously
-# -------------------------------------------------------------
 def piper_stdout_reader():
     while True:
         chunk = piper_proc.stdout.read(65536)
@@ -104,9 +107,7 @@ def piper_stdout_reader():
 
 threading.Thread(target=piper_stdout_reader, daemon=True).start()
 
-# -------------------------------------------------------------
 # Background thread to feed PyAudio
-# -------------------------------------------------------------
 def audio_worker():
     stream = pa.open(format=FORMAT,
                      channels=CHANNELS,
@@ -123,9 +124,7 @@ def audio_worker():
 
 threading.Thread(target=audio_worker, daemon=True).start()
 
-# -------------------------------------------------------------
 # Flask endpoint
-# -------------------------------------------------------------
 @app.route("/speak", methods=["POST"])
 def speak():
     try:
@@ -158,9 +157,7 @@ def speak():
         print(f"[ERROR] {e}")
         return jsonify({"error": str(e)}), 500
 
-# -------------------------------------------------------------
 # Graceful shutdown
-# -------------------------------------------------------------
 @atexit.register
 def cleanup():
     print("[INFO] Shutting down Piper subprocess")
@@ -173,6 +170,5 @@ def cleanup():
     except Exception:
         pass
 
-# -------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=False, port=5005)
