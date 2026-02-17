@@ -50,3 +50,15 @@
    4. Copy this and set it as TWITCH_BROADCASTER_ID inside the .env file.
 6. In .env set REWARD_TITLE to the name of your point redeem.
 
+# Optional
+1. Setting START_VOICEVOX to true inside the .env will start VOICEVOX in the background
+   so that it doesn't have to be started separately. Closing terminal will then also close VOICEVOX.
+2. It is possible to integrate this application into OBS so that it opens automatically when OBS is launched.
+   1. Inside OBS click on the menu item "Tools", then on "Scripts".
+   2. Click on the plus icon in the bottom left corner.
+   3. Navigate to the file standalone_twitch_chat_tts\helper_scripts\obs_integration.lua and select it.
+   4. Back in OBS there will be a new input field titled "Path to start.bat". Click on "Browse".
+   5. Navigate to the file standalone_twitch_chat_tts\start.bat and select it.
+   6. Check the box titled "Autostart when OBS starts".
+   7. The app will then automatically open inside a terminal each time OBS is started. To stop it from doing so,
+   simply uncheck the box titled "Autostart when OBS starts".
